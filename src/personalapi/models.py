@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlmodel import JSON, Column, Field, SQLModel
 
+
 class GitHubEvent(SQLModel, table=True):
     id: str = Field(primary_key=True)
     type: str
