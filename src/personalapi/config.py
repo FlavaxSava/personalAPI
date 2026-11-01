@@ -7,6 +7,7 @@ class Settings(BaseSettings):
 
     github_username: str
     github_token: SecretStr
+    github_sync_interval_seconds: int = 900
 
 
 settings = Settings()  # type: ignore[call-arg]

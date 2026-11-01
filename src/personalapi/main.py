@@ -1,12 +1,30 @@
+import asyncio
+import contextlib
+import logging
+from collections.abc import AsyncGenerator
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Query
 from sqlmodel import Session, col, select
 
-from personalapi.db import get_session
+from personalapi.db import get_session, init_db
 from personalapi.models import GitHubEvent
+from personalapi.scheduler import sync_github_forever
 
-app = FastAPI()
+logging.basicConfig(level=logging.INFO)
+
+
+@contextlib.asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    init_db()
+    task = asyncio.create_task(sync_github_forever())
+    yield
+    task.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await task
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
