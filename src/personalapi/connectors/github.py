@@ -1,5 +1,4 @@
 import asyncio
-import json
 from datetime import datetime
 
 import httpx
@@ -42,9 +41,4 @@ def save_events(events: list[dict]) -> None:
 
 if __name__ == "__main__":
     events = asyncio.run(fetch_events())
-    print(len(events))
-    for event in events:
-        print(event["type"])
-
-    print(json.dumps(events[0], indent=2))
     save_events(events)
